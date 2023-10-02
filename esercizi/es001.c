@@ -3,76 +3,33 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define NOME_FILE "listafilm.csv"
-#define FILM 31
-#define STRL 31
+#define DIM 10
 
 /*
 author: Noemi Baruffolo
 date: 18/09/2023
-es: 001_funzione 
-text: La videoteca "Ciak film" necessita di un programma che carichi la lista film in un array di struttura e che stampi a video i 5
-campi : numero, titolo film, genere, anno di uscita, disponibilità film
+es: 001
+text: scrivere un programma in C che calcoli la somma degli elementi di un array utilizzando l'aritmetica dei puntatori. Nel programma
+deve essere implementata la funzione "calcolaSomma(int vett[], int dim)", calcola la somma degli elementi dell'array utilizzando un
+puntatore e restituisce la somma calcolata. Il main() dichiara un array, utilizza la funzione "calcolaSomma(vett[], dim)" e stampa il
+risultato della funzione
 */
 
-typedef struct {
-    int number;
-    char title[STRL];
-    char type[STRL];
-    int year;
-    char state[STRL];
-} Film;
+int calcolaSomma(int vett[], int dim){
+    int somma = 0;
 
-/*
-int contaFilm(char nomeFile[]) {
-    int c;
-    int cont = 0;
-
-    FILE *fp;
-    fp = fopen(nomeFile,"r");
-
-    if(fp != NULL) {
-        while ((c = fgetc(fp)) != EOF) {
-            if(c =='\n') {
-                cont++;
-            }
-        }
-        fclose(fp); //chiude il file
+    for(int k = 0; k < dim; k++){
+        somma += *(vett + k);
     }
-    return cont;
-}
-*/
 
-int caricaFile(Film videoteca[], char nomeFile[]) {
-    int k = 0;
-    FILE *fp;
-    fp = fopen(nomeFile, "r");
-
-    if(fp != NULL) {
-        while(fscanf(fp, "%d", &videoteca[k].number) != EOF) {
-            fscanf(fp, "%s %s %d %s", videoteca[k].title, videoteca[k].type, &videoteca[k].year, videoteca[k].state);
-            k++;
-        }
-        fclose(fp); //chiude il file
-    } else {
-        printf("Il file non esiste o e' vuoto!\n");
-    }
-    return k;
-}
-
-void stampaFilm(Film videoteca[], int dim) {
-    for(int k = 0; k < dim; k++) {
-        printf("\n%d %s %s %d %s", videoteca[k].number, videoteca[k].title, videoteca[k].type, videoteca[k].year, videoteca[k].state);
-    }
+    return somma;
 }
 
 int main() {
-    Film videoteca[FILM];
-    int dim;
-
-    dim = caricaFile(videoteca, NOME_FILE);
-
-    stampaFilm(videoteca, dim);
+    int vett[DIM] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int somma = 0;
+    somma = calcolaSomma(vett, DIM);
+    printf("La somma e': %d", somma);
 
     return 0;
 }
