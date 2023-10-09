@@ -19,7 +19,7 @@ int calcolaSomma(int vett[], int dim){
     int somma = 0;
 
     for(int k = 0; k < dim; k++){
-        somma += *(vett + k);
+        somma += *(vett + k); //somma += vett[k];
     }
 
     return somma;
