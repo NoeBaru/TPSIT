@@ -51,7 +51,7 @@ void bubbleSort3(int vett[], int n) {
         for (int *p = vett; p < vett + sup; p++) {
             if (*p > *(p + 1)){
                 swap(p, p + 1);
-                sca = *p;
+                sca = p - vett;
             }
         }
         sup = sca;
