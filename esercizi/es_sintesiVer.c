@@ -4,9 +4,6 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define DIM 100
-#define LIM_MIN 1
-#define LIM_MAX 20
 #define LUNG_RIGA 200
 #define NOME_FILE "sintesi.csv"
 
@@ -21,10 +18,9 @@ text:
  utilizzando i puntatori e allocazione dinamica (MALLOC)
 */
 
-
 typedef struct {
     char* cognome;
-    char* nome; //char tittle[STRL];
+    char* nome;
     int data;
 } Persona;
 
@@ -33,15 +29,15 @@ int contaPersone(char nomeFile[]) {
     int cont = 0;
 
     FILE *fp;
-    fp = fopen(nomeFile,"r");
+    fp = fopen(nomeFile, "r");
 
-    if(fp != NULL) {
+    if (fp != NULL) {
         while ((c = fgetc(fp)) != EOF) {
-            if(c =='\n') {
+            if (c == '\n') {
                 cont++;
             }
         }
-        fclose(fp); //chiude il file
+        fclose(fp); // chiude il file
     }
     return cont;
 }
@@ -49,72 +45,81 @@ int contaPersone(char nomeFile[]) {
 void caricaFile(Persona contatti[], char* fileName, char* campo, char* riga, int dim) {
     FILE* fp;
     fp = fopen(fileName, "r");
-    int k = 0;
+    int cont = 0;
 
-    if(fp == NULL) {
+    if (fp == NULL) {
         printf("Il file %s non esiste o e' vuoto!\n", fileName);
-        exit(1);   
+        exit(1);
     }
-    for (int *p = contatti; p < contatti + dim; p++) {
 
+    for (Persona* p = contatti; p < contatti + dim; p++) {
         fgets(riga, LUNG_RIGA, fp);
-        campo = strtok (riga,",");
-        //(*(contatti + k)).number = atoi(campo); //più pesante e scomoda, meglio la seguente
-        (contatti + k)->cognome = atoi(campo); //atoi passa da stringa e int con atof da stringa a float
+        campo = strtok(riga, ",");
+        p->cognome = strdup(campo);
 
-        campo = strtok (NULL,",");
-        (contatti + k)->nome = strdup(campo); //strdup duplica il campo
+        campo = strtok(NULL, ",");
+        p->nome = strdup(campo);
 
-        campo = strtok (NULL,",");
-        (contatti + k)->data = strdup(campo);
+        campo = strtok(NULL, ",");
+        p->data = atoi(campo);
 
-        k++;
+        cont++;
+    }
 
-        }
-        fclose(fp); //chiude il file
+    fclose(fp); // chiude il file
 }
 
-void swap(int *a, int *b) {
-    int temp = *a;
+void swap(Persona *a, Persona *b) {
+    Persona temp = *a;
     *a = *b;
     *b = temp;
 }
 
-void bubbleSort3(Persona contatto, int n) {
-    int k, sup, sca; 
+void bubbleSort3(Persona contatto[], int n) {
+    int sup, sca;
     sup = n - 1;
+
     while (sup > 0) {
         sca = 0;
-        for (k = 0; k < sup ; k++) {
-            if ((contatto.data + k) > (contatto.data + k + 1)){
-                swap((contatto.data + k), (contatto.data + k + 1));
-                sca = k ;
+
+        for (int cont = 0; cont < sup; cont++) {
+            if (contatto[cont].data < contatto[cont + 1].data) {
+                swap(&contatto[cont], &contatto[cont + 1]);
+                sca = cont;
             }
         }
-        sup = sca ;
+
+        sup = sca;
     }
 }
 
 void stampaPersona(Persona contatti[], int dim) {
-   for (int *k = contatti; k < contatti + dim; k++){
-        printf("\n%s %s %d", (contatti + (*k))->cognome, (contatti + (*k))->nome, (contatti + (*k))->data);
+    for (Persona* cont = contatti + dim - 1; cont >= contatti; cont--) {
+        printf("\n%s %s %d", cont->cognome, cont->nome, cont->data);
     }
 }
 
-int main(){
+int main() {
     int dim;
-    dim = contaPersona(NOME_FILE);
+    dim = contaPersone(NOME_FILE);
     Persona* contatti;
-    
-    contatti = (Persona*) malloc(dim * sizeof(Persona));
+
+    contatti = (Persona*)malloc(dim * sizeof(Persona));
     char riga[LUNG_RIGA];
     char* campo;
-      
+
     caricaFile(contatti, NOME_FILE, campo, riga, dim);
 
-    bubbleSort3(contatti, dim); //ordina il vettore
+    bubbleSort3(contatti, dim);
 
     stampaPersona(contatti, dim);
+
+    // Libera la memoria allocata dinamicamente
+    for (int cont = 0; cont < dim; cont++) {
+        free(contatti[cont].cognome);
+        free(contatti[cont].nome);
+    }
+    free(contatti);
 
     return 0;
 }

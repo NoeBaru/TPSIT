@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define DIM 10
-
 /*
 author: Noemi Baruffolo
 date: 21/09/2023
@@ -17,37 +15,38 @@ memoria allocata dinamicamente utilizzando la funzione free alla fine del
 programma per evitare perdite di memoria.
 */
 
-void stampaVett(iint vett, int dim){
-    printf("Valori inseriti:\n");
+void caricaVett(int* vett, int dim){
+    printf("Inserisci %d valori interi:\n", dim);
 
-        for(int cont = 0; cont < dim; cont++) {
-            printf("%d ", vett[cont]);
+        for (int *p = vett; p < vett + dim; p++) {
+            scanf("%d", p);
         }
+}
+
+void stampaVett(int* vett, int dim) {
+    printf("Valori inseriti:\n");
+    for (int *p = vett; p < vett + dim; p++) {
+        printf("%d ", *p);
+    }
     printf("\n");
 }
 
-int main(){
+int main() {
     int dim;
     int* vett;
     
-    // Chiedi all'utente di specificare la dimensione dell'vett
-    printf("Inserisci la dimensione dell'vett: ");
+    printf("Inserisci la dimensione del vettore: ");
     scanf("%d", &dim);
 
-    // Alloca dinamicamente memoria per l'vett di interi
-    vett = (int*)malloc(n * sizeof(int));
+    vett = (int*)malloc(dim * sizeof(int));
 
     if (vett != NULL) {
 
-        printf("Inserisci %d valori interi:\n", dim);
-        for(int cont = 0; cont < dim; cont++) {
-            scanf("%d", &vett[cont]);
-        }
+        caricaVett(vett, dim);
 
         stampaVett(vett, dim);
 
-        // Libera la memoria allocata dinamicamente
-        free(vett);
+        free(vett); // Libera la memoria allocata dinamicamente
     }
 
     return 0;
