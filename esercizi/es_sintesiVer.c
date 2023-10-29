@@ -83,8 +83,8 @@ void bubbleSort3(Persona contatto[], int n) {
         sca = 0;
 
         for (int cont = 0; cont < sup; cont++) {
-            if (contatto[cont].data < contatto[cont + 1].data) {
-                swap(&contatto[cont], &contatto[cont + 1]);
+            if ((contatto + cont)->data < (contatto + cont + 1)->data) {
+                swap(contatto + cont, contatto + cont + 1);
                 sca = cont;
             }
         }
@@ -94,8 +94,13 @@ void bubbleSort3(Persona contatto[], int n) {
 }
 
 void stampaPersona(Persona contatti[], int dim) {
+    int temp = 0;
     for (Persona* cont = contatti + dim - 1; cont >= contatti; cont--) {
-        printf("\n%s %s %d", cont->cognome, cont->nome, cont->data);
+        printf("\n%s %s ", cont->cognome, cont->nome);
+        printf("%02d/", cont->data % 100);
+        temp = cont->data / 100;
+        printf("%02d/", temp % 100);
+        printf("%d", temp / 100);
     }
 }
 
@@ -114,12 +119,7 @@ int main() {
 
     stampaPersona(contatti, dim);
 
-    // Libera la memoria allocata dinamicamente
-    for (int cont = 0; cont < dim; cont++) {
-        free(contatti[cont].cognome);
-        free(contatti[cont].nome);
-    }
-    free(contatti);
+    free(contatti); // Libera la memoria allocata dinamicamente
 
     return 0;
 }

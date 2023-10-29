@@ -8,12 +8,22 @@ author: Noemi Baruffolo
 date: 21/09/2023
 es: 004
 text: Scrivi un programma in linguaggio C che consenta all'utente di creare un array dinamico
-di interi. Il programma dove avere una dimensione array specificata, usando la
+di interi. Il programma deve avere una dimensione array specificata, usando la
 funzione malloc per allocare in modo dinamico gli interi.
 L’utente deve poter inserire valori interi, che verranno stampati. Assicurarsi di liberare la
 memoria allocata dinamicamente utilizzando la funzione free alla fine del
 programma per evitare perdite di memoria.
 */
+
+int chiediDim(int min, int max, char mess[]) {
+    int n;
+
+    do{
+        printf(mess);
+        scanf("%d", &n);
+    } while(n < min || n > max);
+    return n;
+}
 
 void caricaVett(int* vett, int dim){
     printf("Inserisci %d valori interi:\n", dim);

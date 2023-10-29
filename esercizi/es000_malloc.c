@@ -53,24 +53,24 @@ void caricaFile(Film videoteca[], char* fileName, char* campo, char* riga, int d
         printf("Il file %s non esiste o e' vuoto!\n", fileName);
         exit(1);   
     }
-    for (int *p = videoteca; p < videoteca + dim; p++) {
+    for (Film *p = videoteca; p < videoteca + dim; p++) {
 
         fgets(riga, LUNG_RIGA, fp);
         campo = strtok (riga,",");
         //(*(videoteca + k)).number = atoi(campo); //più pesante e scomoda, meglio la seguente
-        (videoteca + k)->number = atoi(campo); //atoi passa da stringa e int con atof da stringa a float
+        p->number = atoi(campo); //atoi passa da stringa e int con atof da stringa a float
 
         campo = strtok (NULL,",");
-        (videoteca + k)->title = strdup(campo); //strdup duplica il campo
+        p->title = strdup(campo); //strdup duplica il campo
 
         campo = strtok (NULL,",");
-        (videoteca + k)->type = strdup(campo);
+        p->type = strdup(campo);
 
         campo = strtok (NULL,",");
-        (videoteca + k)->year = atoi(campo);
+        p->year = atoi(campo);
 
         campo = strtok (NULL,",");
-        (videoteca + k)->state = strdup(campo);
+        p->state = strdup(campo);
 
         k++;
 
@@ -79,8 +79,8 @@ void caricaFile(Film videoteca[], char* fileName, char* campo, char* riga, int d
 }
 
 void stampaFilm(Film videoteca[], int dim) {
-   for (int *k = videoteca; k < videoteca + dim; k++){
-        printf("\n%d %s %s %d %s", (videoteca + (*k))->number, (videoteca + (*k))->title, (videoteca + (*k))->type, (videoteca + (*k))->year, (videoteca + (*k))->state);
+   for (Film *k = videoteca; k < videoteca + dim; k++){
+        printf("\n%d %s %s %d %s", k->number, k->title, k->type, k->year, k->state);
     }
 }
 
@@ -97,6 +97,8 @@ int main() {
     caricaFile(videoteca, fileName, campo, riga, dim);
 
     stampaFilm(videoteca, dim);
+
+    free(videoteca);
 
     return 0;
 }
