@@ -111,7 +111,7 @@ void stampaLibriData(Libro* archivio, int dim, int data) {
     }
 }
 
-void scambio(Libro *a, Libro *b) {
+void swap(Libro *a, Libro *b) {
     Libro temp = *a;
     *a = *b;
     *b = temp;
@@ -123,7 +123,7 @@ void bubbleSort3(Libro archivio[], int dim) {
     while (sup > 0) {
         sca = 0;
         for (Libro *p = archivio; p < archivio + sup; p++) {
-            if (*p < *(p + 1)){
+            if (p->year < (p + 1)->year){
                 swap(p, p + 1);
                 sca = p - archivio;
             }
@@ -135,6 +135,7 @@ void bubbleSort3(Libro archivio[], int dim) {
 int main(){
     char fileName[] = "listaLibri.csv";
     int dim;
+    int data;
     dim = contaLibri(fileName);
     Libro* archivio;
     
@@ -146,7 +147,8 @@ int main(){
 
     stampaLibro(archivio, dim);
 
-    int data = chiediDim(0,dim,"Inserisci un anno: ");
+    printf("Inserisci un anno: ");
+    scanf("%d", data);
 
     stampaLibriData(archivio, dim, data);
 
