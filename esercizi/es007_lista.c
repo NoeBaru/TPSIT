@@ -25,20 +25,35 @@ typedef struct El {
 Quindi, restituisce la somma dei soli valori della lista che sono multipli di M. Se la lista è vuota, la funzione restituisce il valore -1.
 */
 
-//quindi prendo m (tipo 3) lo metto in cima, poi sommo e quindi diventa 3 6 9 (ecc...)
-
 typedef struct El{
     int dato;
     struct El *next;
 } Elemento;
 
+void multipli(Elemento* lista, int m){
+    Elemento* l = lista;
+    while(l != NULL){
+        //prendo multipli di m scorrendo e li aggiungo a "somma"
+    }
+}
+
+void stampaLista(Elemento* lista){
+    Elemento* l = lista;
+    printf("\nValori lista: ");
+    while (l != NULL)
+    {
+        printf("%d ", l->dato);
+        l = l ->next;
+    }
+}
+
 int main(){
-    int m;
+    int m, n;
     Elemento* lista = NULL;
     Elemento* l;
     do{
         printf("Inserisci un naturale o -1 per terminare\n");
-        scanf("%d",&m);
+        scanf("%d",&n);
         if (m >= 0){
             if (lista == NULL){ /* prima iterazione */
                 lista = (Elemento*) malloc(sizeof(Elemento));
@@ -49,10 +64,10 @@ int main(){
                 l = l->next;
             }
 
-            l->dato = m;
+            l->dato = n;
             l->next = NULL;
         }
-    } while (m >= 0);
+    } while (n >= 0);
     l = lista;
     printf("numeri inseriti: ");
     while (l != NULL){
@@ -60,5 +75,7 @@ int main(){
         l = l->next;
     }
     printf("\n");
+
+    stampaLista(lista);
     return 0;
 }
