@@ -25,57 +25,52 @@ typedef struct El {
 Quindi, restituisce la somma dei soli valori della lista che sono multipli di M. Se la lista è vuota, la funzione restituisce il valore -1.
 */
 
-typedef struct El{
+typedef struct El {
     int dato;
     struct El *next;
 } Elemento;
 
-void multipli(Elemento* lista, int m){
-    Elemento* l = lista;
+int somma(Elemento *head, int n){
+    if(head == NULL){
+        return -1;
+    }
+    int somma = 0;
+    Elemento *l = head;
     while(l != NULL){
-        //prendo multipli di m scorrendo e li aggiungo a "somma"
+        if(l->dato % n == 0){
+            somma += l->dato;
+        }
+        l = l->next;
     }
-}
-
-void stampaLista(Elemento* lista){
-    Elemento* l = lista;
-    printf("\nValori lista: ");
-    while (l != NULL)
-    {
-        printf("%d ", l->dato);
-        l = l ->next;
-    }
+    return somma;
 }
 
 int main(){
-    int m, n;
-    Elemento* lista = NULL;
+    int n, ris, numMult;
+    Elemento* head = NULL;
     Elemento* l;
+
     do{
-        printf("Inserisci un naturale o -1 per terminare\n");
-        scanf("%d",&n);
-        if (m >= 0){
-            if (lista == NULL){ /* prima iterazione */
-                lista = (Elemento*) malloc(sizeof(Elemento));
-                l = lista;
+        printf("inserisci un naturale o -1 per terminare: ");
+        scanf("%d", &n);
+        if(n >= 0){
+            if(head == NULL){
+                head = (Elemento*) malloc(sizeof(Elemento));
+                l = head;
             }
-            else{ /* iterazioni successive */
+            else{
                 l->next = (Elemento*) malloc(sizeof(Elemento));
                 l = l->next;
             }
-
             l->dato = n;
             l->next = NULL;
         }
-    } while (n >= 0);
-    l = lista;
-    printf("numeri inseriti: ");
-    while (l != NULL){
-        printf("%d - %p \n",l->dato, l->next);
-        l = l->next;
-    }
-    printf("\n");
-
-    stampaLista(lista);
+    }while(n >= 0);
+    printf("inserisci il numero M: ");
+    scanf("%d", &numMult);
+    ris = somma(head, numMult);
+    printf("la somma è: %d", ris);
+    free(head);
+    free(l);
     return 0;
 }
