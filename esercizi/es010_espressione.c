@@ -7,13 +7,14 @@
 /*
 author: Noemi Baruffolo
 date: 13/11/2023
-es: 009 pile
+es: 010 espressione
 text: chiedere una stringa in input, ciclo for su tutti i caratteri, quando trovo una parentesi aperta faccio push, gli altri caratteri
 gli ignoro, se parentesi chiusa faccio pop. Se arrivo con la pila vuota, le parentesi sono giuste
 */
 
-typedef struct node{
-    int valore;
+typedef struct node {
+    char carattere;
+    int posizione;
     struct node* next;
 } Node;
 
@@ -49,32 +50,52 @@ void stampaPila(Node* head){
     Node* l = head;
     printf("\nValori lista: ");
     while (l != NULL){
-        printf("%d ", l->valore);
+        printf("%d ", l->carattere);
         l = l ->next;
     }
 }
 
-int main(){
-    int n;
-    Node* head = NULL;
+void controllaParentesi(const char* stringa) {
+    Node* pila = NULL;
+    int posizione = 0;
+    int len = strlen(stringa);
 
-    do{
-        printf("inserire un numero naturale o -1 per terminare: ");
-        scanf("%d", &n);
-        if(n >= 0){
-            Node* element = (Node*) malloc(sizeof(Node));
-            element->valore = n;
-            push(&head, element);
+    for (int i = 0; i < len; ++i) {
+        char carattere = stringa[i];
+        posizione++;
+
+        if (carattere == '{' || carattere == '[' || carattere == '(') {
+            Node* element = (Node*)malloc(sizeof(Node));
+            element->carattere = carattere;
+            element->posizione = posizione;
+            push(&pila, element);
+        } else if (carattere == '}' || carattere == ']' || carattere == ')') {
+            Node* parentesi = pop(&pila);
+            if (parentesi == NULL ||
+                (carattere == '}' && parentesi->carattere != '{') ||
+                (carattere == ']' && parentesi->carattere != '[') ||
+                (carattere == ')' && parentesi->carattere != '(')) {
+                printf("Errore! Parentesi non corrispondenti alla posizione %d\n", posizione);
+                return;
+            }
+            free(parentesi);
         }
-    } while (n >= 0);
+    }
 
-    stampaPila(head);
+    if (!is_empty(pila)) {
+        Node* parentesi = pop(&pila);
+        printf("Errore! Parentesi non chiuse alla posizione %d\n", parentesi->posizione);
+        free(parentesi);
+        return;
+    }
 
-    printf("\nFaccio la pop:\n");
-    Node*  removed = pop(&head);
-    printf("%d\n", removed->valore);
+    printf("Parentesi corrette!\n");
+}
 
-    stampaPila(head);
+int main(){
+    char stringa[] = "{1+[2+3]*5}";
+    
+    controllaParentesi(stringa);
     
     return 0;
 }
