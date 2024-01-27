@@ -49,27 +49,33 @@ struct Coda* creaCoda() { //alloca in modo dinamico una struttura struct Coda
     return coda;
 }
 
-void caricaPersone(struct Persona* persona, int* contPersone){
-    char risp;
+void caricaPersone(struct Persona* persona){
+    printf("Inserisci il cognome: ");
+    persona->cognome = (char*)malloc(50 * sizeof(char));
+    scanf("%s", persona->cognome);
 
-    do{
-        printf("Per Inserire una nuova persona premi 's' per continuare o 'n' se hai finito di caricare le persone:\n");
-        fflush(stdin);
-        scanf("%s", risp);
-        printf("Inserisci il cognome: ");
-        fflush(stdin);
-        scanf("%s", persona->cognome);
-        printf("Inserisci il nome: ");
-        fflush(stdin);
-        scanf("%s", persona->nome);
-        printf("Inserisci l'eta': ");
-        scanf("%d", persona->eta);
-        (*contPersone)++;
+    printf("Inserisci il nome: ");
+    persona->nome = (char*)malloc(50 * sizeof(char));
+    scanf("%s", persona->nome);
 
-    }while(risp != 'n' || risp != 'N');
+    printf("Inserisci l'eta': ");
+    scanf("%d", &persona->eta);
 }
 
-//inserisciInCoda(){}
+void inserisciInCoda(struct Coda* coda, struct Persona* persona) {
+    struct Persona* nuovaPersona = (struct Persona*)malloc(sizeof(struct Persona));
+    nuovaPersona->nome = strdup(persona->nome);
+    nuovaPersona->cognome = strdup(persona->cognome);
+    nuovaPersona->eta = persona->eta;
+    nuovaPersona->next = NULL;
+
+    if (coda->rear == NULL) {
+        coda->front = coda->rear = nuovaPersona;
+    } else {
+        coda->rear->next = nuovaPersona;
+        coda->rear = nuovaPersona;
+    }
+}
 
 int isEmptyCoda(struct Coda* coda) { //la funzione isEmptyCoda restituisce 1 se la coda è vuota altrimenti restituisce 0
     return coda->front == NULL;
@@ -104,7 +110,7 @@ void enqueue(struct Coda* coda, struct Persona* persona) {
 
 struct Persona* dequeue(struct Coda* coda) { //la funzione dequeue, rimuove e restituisce il primo elemento
     if (isEmptyCoda(coda)) {
-        printf("Errore: la coda è vuota\n");
+        printf("Errore: la coda e' vuota\n");
         return NULL;
     }
 
@@ -118,30 +124,87 @@ struct Persona* dequeue(struct Coda* coda) { //la funzione dequeue, rimuove e re
     return temp;
 }
 
-//visualizzaCoda(){}
+void visualizzaCoda(struct Coda* coda) {
+    if (coda->front == NULL) {
+        printf("La coda e' vuota.\n");
+        return;
+    }
 
-//rimuoviDallaCoda(){}
+    struct Persona* temp = coda->front;
+    while (temp != NULL) {
+        printf("Nome: %s, Cognome: %s, Eta': %d\n", temp->nome, temp->cognome, temp->eta);
+        temp = temp->next;
+    }
+}
 
-//uscitaProgramma(){}
+void rimuoviDallaCoda(struct Coda* coda) {
+    if (coda->front == NULL) {
+        printf("Errore: la coda e' vuota\n");
+        return;
+    }
 
-int main() {
-    struct Persona* persone;
-    struct Coda* coda = creaCoda();
-    int contPersone;
+    struct Persona* temp = coda->front;
+    struct Persona* personaMaxEta = coda->front;
+    struct Persona* prev = NULL;
 
-    caricaPersone(persone, &contPersone);
+    while (temp->next != NULL) {
+        if (temp->next->eta > personaMaxEta->eta) {
+            personaMaxEta = temp->next;
+            prev = temp;
+        }
+        temp = temp->next;
+    }
 
-    enqueue(coda, persone);
+    if (prev == NULL) {
+        coda->front = personaMaxEta->next;
+    } else {
+        prev->next = personaMaxEta->next;
+    }
 
-    printf("Dimensione della coda: %d\n", sizeCoda(coda)); //stampa dimensione
+    if (coda->rear == personaMaxEta) {
+        coda->rear = prev;
+    }
 
-    while (!isEmptyCoda(coda)) {
-        struct Persona* persona = dequeue(coda); // rimozione dequeue
-        printf("Nome persona dalla coda: %d\n", persona->nome);
-        free(persona); // Deallocazione dell'elemento
+    printf("Persona rimossa: Nome: %s, Cognome: %s, Eta': %d\n", personaMaxEta->nome, personaMaxEta->cognome, personaMaxEta->eta);
+    free(personaMaxEta->nome);
+    free(personaMaxEta->cognome);
+    free(personaMaxEta);
+}
+
+void uscitaProgramma(struct Coda* coda) {
+    while (coda->front != NULL) {
+        struct Persona* persona = coda->front;
+        coda->front = coda->front->next;
+        free(persona->nome);
+        free(persona->cognome);
+        free(persona);
     }
 
     free(coda);
+}
+
+int main() {
+    struct Coda* coda = creaCoda();
+    struct Persona persona;
+
+    char risposta;
+    do {
+        caricaPersone(&persona);
+        inserisciInCoda(coda, &persona);
+
+        printf("Vuoi inserire un'altra persona? (s/n): ");
+        scanf(" %c", &risposta);
+    } while (risposta == 's' || risposta == 'S');
+
+    printf("Contenuto della coda:\n");
+    visualizzaCoda(coda);
+
+    rimuoviDallaCoda(coda);
+
+    printf("Contenuto della coda dopo la rimozione:\n");
+    visualizzaCoda(coda);
+
+    uscitaProgramma(coda);
 
     return 0;
 }
