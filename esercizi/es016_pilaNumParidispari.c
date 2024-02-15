@@ -17,69 +17,83 @@ La stampa che si vuole ottenere e'
 La funzione deve utilizzare come struttura dati di appoggio una pila o una coda.
 */
 
-typedef struct node{
-    int valore;
-    struct node* next;
-} Node;
+typedef struct numero{
+    int num;
+    struct numero* next;
+}Numero;
 
-int is_empty(Node* head){
-    if(head == NULL){
-        return 1;
-    } else{
-        return 0;
-    }
+bool is_empty(Numero* head){
+    return head == NULL;
 }
 
-void push(Node** head, Node* element){
+void push(Numero **head, Numero *element){
     if(is_empty(*head)){
         *head = element;
         element->next = NULL;
-    } else{
+    }
+    else{
         element->next = *head;
         *head = element;
     }
 }
 
-Node* pop(Node** head){
-    Node* ret = *head;
+Numero* pop(Numero **head){
+    Numero* stack;
     if(is_empty(*head)){
         return NULL;
-    } else{
-        *head = ret->next;
     }
-    return ret;
+    else{
+        stack = *head;
+        *head = stack->next;
+    }
+    return stack;
 }
 
-void stampaPila(Node* head){
-    Node* l = head;
-    printf("\nValori lista: ");
-    while (l != NULL){
-        printf("%d ", l->valore);
-        l = l ->next;
+Numero* pila_pari_dispari(Numero* head){
+    Numero* p;
+    while(head->next != NULL){
+        p = (Numero*)malloc(sizeof(Numero));
+        if(head->num % 2 == 0)
+            push(&p, head);
+        head = head->next;
+    }
+    while(head->next != NULL){
+        p = (Numero*)malloc(sizeof(Numero));
+        if(head->num % 2 != 0)
+            push(&p, head);
+        head = head->next;
+    }
+    return p;
+}
+
+void print_stack(Numero* head){
+    Numero* s = head;
+    while(s != NULL){
+        printf("%d ", s->num);
+        s = s->next;
     }
 }
 
 int main(){
+    Numero* head;
+    Numero* el;
+    Numero* pila_finale;
+    char car = 'n';
     int n;
-    Node* head = NULL;
-
-    do{
-        printf("inserire un numero naturale o -1 per terminare: ");
+    while(car == 'n'){
+        head = (Numero*)malloc(sizeof(Numero));
+        el = (Numero*)malloc(sizeof(Numero));
+        printf("inserisci un numero: ");
         scanf("%d", &n);
-        if(n >= 0){
-            Node* element = (Node*) malloc(sizeof(Node));
-            element->valore = n;
-            push(&head, element);
-        }
-    } while (n >= 0);
-
-    stampaPila(head);
-
-    printf("\nFaccio la pop:\n");
-    Node*  removed = pop(&head);
-    printf("%d\n", removed->valore);
-
-    stampaPila(head);
-    
+        el->num = n;
+        push(&head, el);
+        head = head->next;
+        printf("vuoi fermare? (s o n): ");
+        fflush(stdin);
+        scanf("%c", &car);
+    }
+    pila_finale = pila_pari_dispari(head);
+    print_stack(pila_finale);
+    free(head); free(el); free(pila_finale);
     return 0;
 }
