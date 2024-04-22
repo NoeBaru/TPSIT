@@ -1,0 +1,17 @@
+5/04/2024
+----------
+MULTI THREAD:
+thread per fare funzionare il programma in modo asincrono
+
+t.start() esegue la funzione del tread
+time e join perché in base allo spazio temporale tra il primo e il secondo viene esegutio il processo
+
+join attesa di esecuzione tra un thread e l'altro
+
+in c librerie in python nei processi importiamo i moduli(es. import threading)
+
+15/04/2024
+----------
+Il programma multi thread ha un thread principale da cui partono dei flussi che al termine rimarranno fermi
+Il tempo del thread segue una linea cronologica verso il basso.
+dobbiamo chiudere i flussi indipendenti creati con il .join() nel flusso principale
