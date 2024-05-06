@@ -34,6 +34,16 @@ def main():
     1.creo oggetto di tipo lock, che è un blocco.
     2.individuo l'area critica
     3.inserisco blocco.acquire(), in mezzo la riga critica, poi blocco.release() per acquisire e rilasciarela lock
+
+    /////MODIFICARE//////////
+    modifico l'esercizio in modo che:
+    - il saldo diventi un valore scritto in un file
+    - ogni volta che vi opero, apro il file, leggo il valore, lo aggiorno e chiudo il file
+
+    - dentro al Thread implementa un meccanismo che impedisca al saldo di diventare negativo
+    - creiamo una lista di 10 thread con ciascuno una percentuale diversa dagli altri e li eseguiamo
+    - nella classe thread implementiamo il metodo kill
+    - il metodo Thread lascia eseguire i Thread per un minuto, poi li killa e fa la join
     """
     luca = Prelievo(5)
     mario = Prelievo(-6)
