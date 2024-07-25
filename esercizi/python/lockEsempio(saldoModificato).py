@@ -5,21 +5,34 @@ saldo = 1000 #variabile globale(accessibile da tutte le classi e funzioni che fa
 blocco = threading.Lock()
 
 class Prelievo(threading.Thread):
-    def __init__(self, percentuale):
+    def __init__(self, file, percentuale):
         super().__init__()
+        self.file = file
         self.percentuale = percentuale
+        self.running = True
     def run(self):
-        global saldo #così possiamo modificare saldo che era già globale nel metodo
-        while True: #esegue simultaneamente su più thread, l'ordine dipende dalla CPU del computer
-            cifra = self.percentuale * (saldo /100)
-            time.sleep(1)
-            #BLOCCANTE
-            #MUTEX: mutuamente esclusivo cioè che lo esegue un thread alla volta, non tutti i thread insieme
-            blocco.acquire() #acquisisce la lock
-            saldo -= cifra #zona critica
-            blocco.release() #rilascia la lock
-            print(f"Il saldo aggiornato è {saldo}")
-            time.sleep(5)
+        while self.running: #esegue simultaneamente su più thread, l'ordine dipende dalla CPU del computer
+            with open(self.file, "r") as file: #si potrebbero usare due lock, uno per scrittura e uno per lettura
+                saldoStr = file.readline()
+            saldo = float(saldoStr)
+
+            if saldo > 0:
+                cifra = self.percentuale * (saldo /100)
+                time.sleep(1)
+                blocco.acquire() #acquisisce la lock
+                saldo -= cifra #zona critica
+
+                with open(self.file, "w") as file:
+                    file.write(str(saldo))
+
+                blocco.release() #rilascia la lock
+                print(f"Il saldo aggiornato è {saldo}")
+                time.sleep(5)
+            else:
+                print("Saldo in negativo")
+                self.running = False
+    def kill(self):
+        self.running = False
 def main():
     """
     Author: Noemi Baruffolo
@@ -35,7 +48,7 @@ def main():
     2.individuo l'area critica
     3.inserisco blocco.acquire(), in mezzo la riga critica, poi blocco.release() per acquisire e rilasciarela lock
 
-    /////MODIFICARE//////////
+    ////////MODIFICARE//////////
     modifico l'esercizio in modo che:
     - il saldo diventi un valore scritto in un file
     - ogni volta che vi opero, apro il file, leggo il valore, lo aggiorno e chiudo il file
@@ -45,10 +58,15 @@ def main():
     - nella classe thread implementiamo il metodo kill
     - il metodo Thread lascia eseguire i Thread per un minuto, poi li killa e fa la join
     """
-    luca = Prelievo(5)
-    mario = Prelievo(-6)
-
-    luca.start()
-    mario.start()
+    file = "saldo.txt"
+    listaPrelievi = [5, -6]
+    lista_thread = [Prelievo(file, n) for n in listaPrelievi]
+    for t in lista_thread:
+        t.start()
+    time.sleep(60)
+    for t in lista_thread:
+        t.kill()
+    for t in lista_thread:
+        t.join()
 if __name__ == '__main__':
     main()

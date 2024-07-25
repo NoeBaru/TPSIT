@@ -7,7 +7,7 @@ alfabeto = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n','o','p','
 class MioThread(Thread):
     def __init__(self, lettera):
         super().__init__()
-        self.lettera = lettera
+        self.lettera = lettera   
 
     def run(self):#qua ci sta il codice del thread
         print(f"sono il thread {self.lettera}")

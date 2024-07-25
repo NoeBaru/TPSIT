@@ -1,9 +1,10 @@
 import socket
 from threading import Thread
 
-SERVER_ADDRESS = ("192.168.1.112", 9000)
+SERVER_ADDRESS = ("192.168.1.124", 43210)
 BUFFER_SIZE = 4096
-NICKNAME = "noeBaru"
+MY_ADDRESS = ("0.0.0.0", 43210)
+NICKNAME = "noe"
 
 class Receiver(Thread):
     def __init__(self, socket):
@@ -26,12 +27,13 @@ def main():
     text: fare una chat UDP client-server con thread principale che permette di ricevere ed inviare e l'altro solo di inviare
     """
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.bind(MY_ADDRESS)
     ready= True
     receiver = Receiver(s)
     while True:
         message = input("-> ")
         dest = input("Inserisci il nickname del destinatario: ")
-        packet = f"{message}|{NICKNAME}!{dest}"
+        packet = f"{message}|{NICKNAME}|{dest}"
         s.sendto(packet.encode(), SERVER_ADDRESS)
         if ready:
             receiver.start()
